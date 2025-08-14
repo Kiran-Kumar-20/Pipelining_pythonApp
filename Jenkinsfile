@@ -14,15 +14,23 @@ pipeline {
 
         stage('Set Up Python Virtual Environment') {
             steps {
-                bat '"C:\\Users\\kiran\\AppData\\Local\\Programs\\Python\\Python313\\python.exe" -m venv venv'
-                bat '.\\venv\\Scripts\\python.exe -m pip install --upgrade pip'
-                bat '.\\venv\\Scripts\\activate && pip install --prefer-binary -r requirements.txt'
+                // Create virtual environment
+                bat '"C:\\Users\\kiran\\AppData\\Local\\Programs\\Python\\Python313\\python.exe" -m venv %VENV%'
+
+                // Upgrade pip, setuptools, wheel
+                bat ".\\%VENV%\\Scripts\\python.exe -m pip install --upgrade pip setuptools wheel"
+
+                // Force pip to use prebuilt binaries (avoid compiling pandas)
+                bat ".\\%VENV%\\Scripts\\pip.exe install --only-binary :all: pandas"
+
+                // Install the rest of the requirements
+                bat ".\\%VENV%\\Scripts\\pip.exe install --prefer-binary -r requirements.txt"
             }
         }
 
         stage('Run Flask App') {
             steps {
-                bat '.\\venv\\Scripts\\python app.py'
+                bat ".\\%VENV%\\Scripts\\python.exe app.py"
             }
         }
     }
