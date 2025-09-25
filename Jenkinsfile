@@ -30,7 +30,7 @@ pipeline {
 
         stage('Run Flask App') {
             steps {
-                bat ".\\%VENV%\\Scripts\\python.exe app.py"
+                bat ".\\%VENV%\\Scripts\\python.exe hello.py"
             }
         }
     }
